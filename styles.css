@@ -1,0 +1,16 @@
+.walls {
+  width: 500px;
+  height: 500px;
+  border: 2px solid black;
+  margin: 0 auto;
+}
+
+polygon.player {
+  /*stroke: black;*/
+  /*stroke-width: 1;*/
+  fill: black;
+}
+
+.projectile {
+  fill: black;
+}
