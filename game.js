@@ -8,62 +8,9 @@ const game = {
 const w = $('.walls').width(),
       h = $('.walls').height();
 
-const player = {
-  loc: {
-    x: w/2,
-    y: h/2
-  },
-  angle: -pi/2,
-  move: function(dir) {
-    if (dir === 'fwd') {
-      player.loc.x += Math.cos(a) * 2;
-      player.loc.y += Math.sin(a) * 2;
-    } else if (dir === 'back') {
-      player.loc.x -= Math.cos(a) * 2;
-      player.loc.y -= Math.sin(a) * 2;
-    }
-    if (player.loc.x > game.w) {player.loc.x -= game.w;}
-    if (player.loc.y > game.h) {player.loc.y -= game.h;}
-    if (player.loc.x < 0) {player.loc.x += game.w;}
-    if (player.loc.y < 0) {player.loc.y += game.h;}
-    player.render();
-  },
-  shoot: function() {
-    var turd = new Turd(player.loc.x, player.loc.y, player.angle);
-    turd.move();
-  },
-  oldMove: function(axis, val) {
-    player.loc[axis] += val;
-    if (player.loc.x > game.w) {player.loc.x -= game.w;}
-    if (player.loc.y > game.h) {player.loc.y -= game.h;}
-    if (player.loc.x < 0) {player.loc.x += game.w;}
-    if (player.loc.y < 0) {player.loc.y += game.h;}
-    player.render();
-  },
-  rotate(dir) {
-    if (dir === 'right') {
-      player.angle += 2 * pi / 100;
-    } else {
-      player.angle -= 2 * pi/100;
-    }
-    player.angle = player.angle % (2 * pi);
-    player.render();
-  },
-  getCoords: function() {
-    a = player.angle;
-    x = player.loc.x;
-    y = player.loc.y;
-    return `${x + 10 * Math.cos(a)},${y + 10 * Math.sin(a)}
-      ${x + 10 * Math.cos(a + (7 / 6 * pi) )},${y + 10 * Math.sin(a + (7 / 6 * pi) )}
-      ${x + 10 * Math.cos(a + (5 / 6 * pi) ) },${y + 10 * Math.sin(a + (5 / 6 * pi) )} `
-  },
-  render: function() {
-    d3.select('.player')
-      .attr('points', (p) => p.getCoords());
-  }
-};
+var player = new Player(game.w/2, game.h/2, -pi/2);
 
-var ships = d3.select('svg')
+var ship = d3.select('svg')
   .selectAll('polygon')
   .data([player])
   .enter()
@@ -135,7 +82,7 @@ d3.select('body').on('keydown', () => {
     if (!player.shooting) {
       player.shooting = true;
       player.shoot();
-      window.shootInvterval = setInterval(player.shoot, 200);
+      window.shootInvterval = setInterval(player.shoot.bind(player), 200);
     }
   }
 });
