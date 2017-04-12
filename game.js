@@ -1,6 +1,12 @@
+const pi = Math.PI;
+
+const game = {
+  w: $('.walls').width(),
+  h: $('.walls').height()
+}
+
 const w = $('.walls').width(),
       h = $('.walls').height();
-const pi = Math.PI;
 
 const player = {
   loc: {
@@ -8,10 +14,6 @@ const player = {
     y: h/2
   },
   angle: -pi/2,
-  velocity: {
-    x: 1,
-    y: -1,
-  },
   move: function(dir) {
     if (dir === 'fwd') {
       player.loc.x += Math.cos(a) * 2;
@@ -20,36 +22,22 @@ const player = {
       player.loc.x -= Math.cos(a) * 2;
       player.loc.y -= Math.sin(a) * 2;
     }
-    if (player.loc.x > w) {player.loc.x -= w;}
-    if (player.loc.y > h) {player.loc.y -= h;}
-    if (player.loc.x < 0) {player.loc.x += w;}
-    if (player.loc.y < 0) {player.loc.y += h;}
+    if (player.loc.x > game.w) {player.loc.x -= game.w;}
+    if (player.loc.y > game.h) {player.loc.y -= game.h;}
+    if (player.loc.x < 0) {player.loc.x += game.w;}
+    if (player.loc.y < 0) {player.loc.y += game.h;}
     player.render();
   },
   shoot: function() {
-    console.log('bang');
-    var projectile = d3.select('svg')
-      .append('circle')
-      .attr('class', 'projectile')
-      .attr('cx', player.loc.x)
-      .attr('cy', player.loc.y)
-      .attr('r', 2)
-
-    projectile.a = player.angle;
-    projectile.x = player.x;
-    projectile.y = player.y;
-
-    function projectileMove () {
-      d3.select(projectile)
-        .attr()
-    }
+    var turd = new Turd(player.loc.x, player.loc.y, player.angle);
+    turd.move();
   },
   oldMove: function(axis, val) {
     player.loc[axis] += val;
-    if (player.loc.x > w) {player.loc.x -= w;}
-    if (player.loc.y > h) {player.loc.y -= h;}
-    if (player.loc.x < 0) {player.loc.x += w;}
-    if (player.loc.y < 0) {player.loc.y += h;}
+    if (player.loc.x > game.w) {player.loc.x -= game.w;}
+    if (player.loc.y > game.h) {player.loc.y -= game.h;}
+    if (player.loc.x < 0) {player.loc.x += game.w;}
+    if (player.loc.y < 0) {player.loc.y += game.h;}
     player.render();
   },
   rotate(dir) {
@@ -147,7 +135,7 @@ d3.select('body').on('keydown', () => {
     if (!player.shooting) {
       player.shooting = true;
       player.shoot();
-      window.shootInvterval = setInterval(player.shoot, 500);
+      window.shootInvterval = setInterval(player.shoot, 200);
     }
   }
 });
@@ -191,12 +179,3 @@ d3.select('body').on('keyup', () => {
     player.shooting = false;
   }
 });
-
-
-function startGame() {
-  window.interval = setInterval(player.oldMove, 20);
-}
-
-function stopGame() {
-  clearInterval(window.interval);
-}
